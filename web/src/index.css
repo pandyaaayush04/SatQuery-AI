@@ -1,0 +1,170 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "shadow-plugin";
+
+@import "@fontsource-variable/instrument-sans";
+@import "@fontsource/instrument-serif";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+
+/* ---------------------------------------------------------------------
+ * Design tokens: primitive -> semantic. No dark mode (product decision).
+ * Deep teal / mineral sage. Never reference these hexes directly in
+ * components -- use the semantic var()s from @theme inline below.
+ * ------------------------------------------------------------------- */
+:root {
+  /* primitives */
+  --teal-900: #173f3a;   /* primary */
+  --teal-950: #0f2b27;   /* primary, pressed/hover */
+  --teal-100: #e4ece9;   /* primary tint, subtle fills */
+  --sage-400: #a8c6b1;   /* accent */
+  --sage-200: #d8e6db;   /* accent tint */
+  --sage-600: #7fa38b;   /* accent, on-light emphasis */
+  --paper: #f7f6f1;      /* app background */
+  --paper-raised: #fffdf8; /* card surfaces, lifted slightly warmer/lighter than paper */
+  --graphite-900: #202725; /* body text */
+  --graphite-600: #5b655f; /* muted text */
+  --graphite-300: #b9c0ba; /* disabled text/icons */
+  --line: #e2ded2;        /* hairline borders on paper */
+  --line-strong: #cfc9b8;
+  --brick-700: #9a3324;   /* destructive / BLOCK findings */
+  --brick-100: #f3e2dd;
+  --ochre-700: #8a6a1f;   /* warning / WARN findings */
+  --ochre-100: #f1e9d3;
+
+  --font-sans: 'Instrument Sans Variable', 'Instrument Sans', system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --radius: 0.625rem;
+
+  --background: var(--paper);
+  --foreground: var(--graphite-900);
+  --card: var(--paper-raised);
+  --card-foreground: var(--graphite-900);
+  --popover: var(--paper-raised);
+  --popover-foreground: var(--graphite-900);
+  --primary: var(--teal-900);
+  --primary-foreground: var(--paper);
+  --secondary: var(--sage-200);
+  --secondary-foreground: var(--teal-950);
+  --muted: var(--teal-100);
+  --muted-foreground: var(--graphite-600);
+  --accent: var(--sage-400);
+  --accent-foreground: var(--teal-950);
+  --destructive: var(--brick-700);
+  --destructive-foreground: var(--paper);
+  --warning: var(--ochre-700);
+  --warning-foreground: var(--paper);
+  --border: var(--line);
+  --input: var(--line-strong);
+  --ring: var(--sage-600);
+  --sidebar: var(--paper-raised);
+  --sidebar-foreground: var(--graphite-900);
+  --sidebar-primary: var(--teal-900);
+  --sidebar-primary-foreground: var(--paper);
+  --sidebar-accent: var(--sage-200);
+  --sidebar-accent-foreground: var(--teal-950);
+  --sidebar-border: var(--line);
+  --sidebar-ring: var(--sage-600);
+
+  color-scheme: light; /* no dark mode */
+}
+
+@theme inline {
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+  --font-mono: var(--font-mono);
+  --font-heading: var(--font-serif);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "cv11", "ss01";
+  }
+  html {
+    @apply font-sans;
+  }
+  ::selection {
+    background: var(--sage-400);
+    color: var(--teal-950);
+  }
+}
+
+/* Smooth in-page anchor scrolling (nav links, "See It In Action", etc.) -- guarded so reduced-motion
+   users get an instant jump instead, since native scroll-behavior doesn't respect that on its own. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Themed scrollbar instead of the browser default. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--sage-600) var(--paper);
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--paper);
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--sage-600);
+  border-radius: 999px;
+  border: 2px solid var(--paper);
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--teal-900);
+}
+
+/* Extremely faint topographic/contour lines -- decorative texture, never meant to read as data. */
+.contour-bg {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Cg fill='none' stroke='%23173F3A' stroke-width='1'%3E%3Cpath d='M-20 40 Q 60 10, 120 40 T 260 40'/%3E%3Cpath d='M-20 90 Q 60 60, 120 90 T 260 90'/%3E%3Cpath d='M-20 140 Q 60 110, 120 140 T 260 140'/%3E%3Cpath d='M-20 190 Q 60 160, 120 190 T 260 190'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 240px 240px;
+  opacity: 0.035;
+}
+

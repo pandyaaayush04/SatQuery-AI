@@ -1,0 +1,28 @@
+# environments and secrets
+.venv/
+venv/
+.env
+server/.env
+data/.secret
+data/app.db
+
+# python
+__pycache__/
+*.pyc
+
+# node / build
+node_modules/
+web/dist/
+dist/
+
+# large data and model artifacts (not for git)
+data/raw/
+data/subset/
+kaggle_outputs/
+
+# local tooling and scratch
+web/backups/
+UI Reference.png
+*.log
+web/screenshot_*.png
+web/shot_*.png
