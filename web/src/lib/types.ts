@@ -75,16 +75,27 @@ export interface ChatResponse {
   session?: SessionResponse
 }
 
+/** One version of an edited question, with everything that came after it in the chat (its answers and any follow-ups). */
+export interface Branch {
+  text: string
+  imageThumbs?: { name: string; url: string; modality?: "optical" | "sar" | null }[]
+  tail: ChatMessage[]
+}
+
 export interface ChatMessage {
   id: string
   role: "user" | "assistant"
   text?: string
   reply?: string
   place?: PlaceInfo
-  imageNames?: string[]
+  author?: string // in a shared chat: the name of the person who asked
+  imageNames?: string[] // older saved chats; newer ones carry imageThumbs
+  imageThumbs?: { name: string; url: string; modality?: "optical" | "sar" | null }[] // small JPEG data URLs, so previews survive a reload
   trace?: Trace
   error?: string
   pending?: boolean
+  branches?: Branch[] // on a question that has been edited: every version of it (the entry for the shown version has a stale tail until you switch)
+  branchIndex?: number // which version is showing
 }
 
 export interface Trace {
@@ -100,4 +111,13 @@ export interface Trace {
     box?: [number, number, number, number] | null
     per_sensor?: Record<string, string>
   }
+}
+
+/** A file the person has attached but not yet sent, with the small preview the server drew for it. */
+export interface Attached {
+  id: string
+  file: File
+  state: "loading" | "ready" | "error"
+  thumb?: string
+  modality?: "optical" | "sar" | null
 }

@@ -1,6 +1,9 @@
 import { MapPin } from "@phosphor-icons/react"
 import type { PlaceInfo } from "@/lib/types"
 
+// 20.872, -156.678 -> "20.872° N, 156.678° W": the letter follows the sign, and the number is always positive.
+const coords = (lat: number, lon: number) => `${Math.abs(lat).toFixed(3)}° ${lat >= 0 ? "N" : "S"}, ${Math.abs(lon).toFixed(3)}° ${lon >= 0 ? "E" : "W"}`
+
 const STAT_LABEL = { vegetation: "Vegetation", water: "Water", built: "Built-up" } as const
 
 export function PlaceCard({ place }: { place: PlaceInfo }) {
@@ -14,7 +17,7 @@ export function PlaceCard({ place }: { place: PlaceInfo }) {
             {place.country ? `, ${place.country}` : ""}
           </p>
           <p className="font-mono text-[11px] text-muted-foreground">
-            {place.lat.toFixed(3)}° N, {place.lon.toFixed(3)}° E
+            {coords(place.lat, place.lon)}
             {place.when && ` · Sentinel-2, ${place.before_when ? `${place.before_when} → ${place.when}` : place.when} · ${place.cloud_pct}% cloud · ${place.km}×${place.km} km`}
           </p>
         </div>

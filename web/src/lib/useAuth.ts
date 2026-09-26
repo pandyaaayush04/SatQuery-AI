@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react"
-import { getConfig, getMe, googleLogin, logout, passwordAuth, type User } from "./auth"
+import { forgotPassword, getConfig, getMe, googleLogin, login, logout, register, resendCode, resetPassword, verifyEmail, type User } from "./auth"
 
-/** Sign-in state for pages outside the chat app (landing nav, login/signup page). The session lives in an HttpOnly cookie, so this
- *  just asks the server who we are; App.tsx keeps its own copy for chat sync and reads the same cookie. */
+/** Sign-in state shared by the landing nav, the login/signup page and the chat app. The session lives in an HttpOnly cookie, so
+ *  this just asks the server who we are. */
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null)
   const [clientId, setClientId] = useState<string | null>(null)
@@ -18,8 +18,22 @@ export function useAuth() {
     return u
   }, [])
 
-  const signInWithPassword = useCallback(async (mode: "login" | "register", email: string, password: string) => {
-    const u = await passwordAuth(mode, email, password)
+  const logIn = useCallback(async (email: string, password: string) => {
+    const u = await login(email, password)
+    setUser(u)
+    return u
+  }, [])
+
+  const signUp = useCallback((email: string, password: string, name: string) => register(email, password, name), [])
+
+  const verify = useCallback(async (email: string, code: string) => {
+    const u = await verifyEmail(email, code)
+    setUser(u)
+    return u
+  }, [])
+
+  const reset = useCallback(async (email: string, code: string, password: string) => {
+    const u = await resetPassword(email, code, password)
     setUser(u)
     return u
   }, [])
@@ -29,5 +43,7 @@ export function useAuth() {
     setUser(null)
   }, [])
 
-  return { user, clientId, loading, signIn, signInWithPassword, signOut }
+  return { user, clientId, loading, signIn, logIn, signUp, verify, resend: resendCode, forgot: forgotPassword, reset, signOut }
 }
+
+export type Auth = ReturnType<typeof useAuth>

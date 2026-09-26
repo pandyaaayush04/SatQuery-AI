@@ -1,9 +1,8 @@
 import { CaretDown, Planet, SignIn, UserPlus } from "@phosphor-icons/react"
 import { useState } from "react"
 import { DropdownMenu } from "radix-ui"
-import { AuthForm } from "@/components/satquery/auth-form"
+import { AuthDialog, type AuthMode } from "@/components/satquery/auth-dialog"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useRoute } from "@/lib/router"
 import { useAuth } from "@/lib/useAuth"
 
@@ -17,7 +16,7 @@ export function LandingNav({ onLaunch }: { onLaunch: () => void }) {
   const { navigate } = useRoute()
   const auth = useAuth()
   const { user, loading } = auth
-  const [authMode, setAuthMode] = useState<"login" | "register" | null>(null)
+  const [authMode, setAuthMode] = useState<AuthMode | null>(null)
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-background/90 backdrop-blur-sm">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-8">
@@ -90,25 +89,7 @@ export function LandingNav({ onLaunch }: { onLaunch: () => void }) {
         </div>
       </div>
 
-      <Dialog open={authMode !== null} onOpenChange={(o) => !o && setAuthMode(null)}>
-        <DialogContent className="gap-5 p-6 sm:max-w-md">
-          <DialogHeader className="items-center text-center">
-            <DialogTitle className="font-serif text-2xl font-normal">{authMode === "register" ? "Create your account" : "Welcome back"}</DialogTitle>
-            <DialogDescription>{authMode === "register" ? "Save your chats and open them on any device." : "Log in to pick up your saved chats."}</DialogDescription>
-          </DialogHeader>
-          {authMode && <AuthForm key={authMode} mode={authMode} auth={auth} onDone={() => navigate("/app")} />}
-          <p className="text-center text-sm text-muted-foreground">
-            {authMode === "register" ? "Already have an account? " : "New here? "}
-            <button
-              type="button"
-              onClick={() => setAuthMode(authMode === "register" ? "login" : "register")}
-              className="font-medium text-primary underline-offset-2 hover:underline"
-            >
-              {authMode === "register" ? "Log in" : "Register"}
-            </button>
-          </p>
-        </DialogContent>
-      </Dialog>
+      <AuthDialog mode={authMode} onModeChange={setAuthMode} auth={auth} onDone={() => navigate("/app")} />
     </header>
   )
 }

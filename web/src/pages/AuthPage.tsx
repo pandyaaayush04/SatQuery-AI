@@ -24,7 +24,7 @@ export function AuthPage({ mode }: { mode: "login" | "signup" }) {
         Back
       </button>
 
-      <div className="relative z-10 w-full max-w-sm space-y-6 rounded-2xl border border-border bg-card p-8 smooth-shadow-ring-sm">
+      <div className={`relative z-10 w-full space-y-6 rounded-2xl border border-border bg-card p-6 smooth-shadow-ring-sm sm:p-8 ${signup ? "max-w-2xl" : "max-w-sm"}`}>
         <div className="flex flex-col items-center gap-3 text-center">
           <div className="flex size-11 items-center justify-center rounded-full bg-primary">
             <Planet className="size-6 text-primary-foreground" weight="fill" />
