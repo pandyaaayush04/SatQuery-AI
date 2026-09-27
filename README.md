@@ -106,6 +106,8 @@ Public benchmarks will be evaluated using the prescribed test splits. The ISRO/S
 
 > *The SatQuery AI landing page: a live 3D Earth with real satellite orbits, and a chat box that answers questions about satellite imagery.*
 
+<img src="docs/screenshots/Earth_Speaks_In_Images.png" alt="SatQuery AI: Earth Speaks In Images" width="100%"/>
+
 ---
 
 ## Our Submission
