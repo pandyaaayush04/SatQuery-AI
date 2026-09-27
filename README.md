@@ -254,26 +254,30 @@ model = PeftModel.from_pretrained(model, adapter_path)  # the QLoRA adapter
 
 ### 2. SatQuery QLoRA Adapter: Fine-tuned for Earth Observation
 
-The base model is fine-tuned with **QLoRA** (a small trained adapter on the frozen 4-bit model) so it answers in the exact formats each task needs: one word for yes/no, a letter for multiple choice, a normalised box for grounding, and a fluent sentence for captions.
+The base model is fine-tuned with **QLoRA** (a small trained adapter on the frozen 4-bit model) so it answers in the exact formats each task needs: one word for yes/no, a letter for multiple choice, a normalised box for grounding, and a fluent sentence for captions. 
+
+*Architecture*: The model targets both the **language projection layers** (`q/k/v/o_proj`, etc.) as well as the **visual merger layers** (`linear_fc1` & `linear_fc2`). Adapting the visual layers directly allowed the model to achieve a massive improvement in spatial understanding and bounding-box grounding accuracy.
 
 | | |
 |---|---|
 | **Method** | QLoRA (LoRA adapter on a 4-bit base) |
-| **Training data** | **BigEarthNet.txt**: BigEarthNet v2 Sentinel-1 (radar) and Sentinel-2 (optical) patches with a question-answer layer |
+| **LoRA Rank (r) & Alpha** | Rank: 32, Alpha: 64, Dropout: 0.05 |
+| **Target Modules** | Language model projections + Visual merger layers |
+| **Training data** | **BigEarthNet.txt** (51k rows): BigEarthNet v2 Sentinel-1 (radar) and Sentinel-2 (optical) patches with a question-answer layer |
 | **Tasks** | Captioning · yes/no · multiple choice · bounding-box grounding |
 | **Coverage** | 10 countries · 4 seasons · 10 climate zones |
 | **Modality robustness** | One sensor is randomly withheld during training, so it answers from optical only, radar only, or both |
-| **Training compute** | Free Kaggle GPUs |
+| **Training compute** | Dual free Kaggle GPUs |
 
-**Held-out benchmark results (200 questions per task type):**
+**Held-out benchmark results (500 questions per task type):**
 
 | Task | Base model | With our adapter |
 |---|---|---|
-| Yes / no (accuracy) | 0.47 | **0.71** |
-| Multiple choice (accuracy) | 0.01 | **0.63** |
-| Bounding box (mean IoU) | 0.04 | **0.47** |
-| Bounding box (accuracy at IoU 0.5) | 0.01 | **0.56** |
-| Captioning (ROUGE-L) | 0.13 | **0.54** |
+| Yes / no (accuracy) | 0.47 | **0.75** |
+| Multiple choice (accuracy) | 0.01 | **0.67** |
+| Bounding box (mean IoU) | 0.04 | **0.53** |
+| Bounding box (accuracy at IoU 0.5) | 0.01 | **0.61** |
+| Captioning (ROUGE-L) | 0.13 | **0.55** |
 
 ### 3. Physics Engine: Deterministic, No Model
 
@@ -442,14 +446,7 @@ uvicorn server.app:app --port 8000
 
 The base model `Qwen/Qwen3-VL-4B-Instruct` (about 9 GB) downloads automatically the first time a question needs it.
 
-### 3. Model adapter
-The trained adapter is not stored in this repository. Put the adapter folder (it contains `adapter_model.safetensors`) at `kaggle_outputs/run1/adapter`, or point to it:
-```bash
-# Windows PowerShell: $env:SATQUERY_ADAPTER = "path\to\adapter"
-export SATQUERY_ADAPTER=path/to/adapter
-```
-
-### 4. Frontend
+### 3. Frontend
 ```bash
 cd web
 npm install
@@ -457,7 +454,7 @@ npm run dev          # development, http://localhost:5173
 npm run build        # production build, then the backend serves it at http://localhost:8000
 ```
 
-### 5. Open
+### 4. Open
 ```
 http://localhost:5173      (development)
 http://localhost:8000      (after npm run build)
